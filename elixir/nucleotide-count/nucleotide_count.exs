@@ -14,11 +14,12 @@ defmodule NucleotideCount do
   """
   @spec count([char], char) :: non_neg_integer
   def count(strand, nucleotide) do
-    strand
-      |> to_string
-      |> String.graphemes
-      |> Enum.count(&(&1 == <<nucleotide::utf8>>))
+    do_count(strand, nucleotide)
   end
+
+  defp do_count([], _), do: 0
+  defp do_count([char|rest], char), do: do_count(rest, char) + 1
+  defp do_count([_|rest], char), do: do_count(rest, char)
 
   @doc """
   Returns a summary of counts by nucleotide.
@@ -30,5 +31,12 @@ defmodule NucleotideCount do
   """
   @spec histogram([char]) :: map
   def histogram(strand) do
+    do_histogram(strand)
+  end
+
+  defp do_histogram([]), do: %{?A => 0, ?T => 0, ?C => 0, ?G => 0}
+
+  defp do_histogram([head|rest]) do
+    Map.update(do_histogram(rest), head, 0, &(&1 + 1))
   end
 end

@@ -14,12 +14,9 @@ defmodule NucleotideCount do
   """
   @spec count([char], char) :: non_neg_integer
   def count(strand, nucleotide) do
-    do_count(strand, nucleotide)
+    strand
+      |> Enum.count(&(&1 == nucleotide))
   end
-
-  defp do_count([], _), do: 0
-  defp do_count([char|rest], char), do: do_count(rest, char) + 1
-  defp do_count([_|rest], char), do: do_count(rest, char)
 
   @doc """
   Returns a summary of counts by nucleotide.
